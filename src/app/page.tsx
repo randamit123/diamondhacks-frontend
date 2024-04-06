@@ -1,17 +1,18 @@
-"use client";
+import {
+  GoogleSignInButton,
+} from "@/auth/authButtons";
+import { getServerSession } from "next-auth";
+import { authConfig } from "@/auth/NextAuth";
+import { redirect } from "next/navigation";
 
-import React, {useEffect, useState} from "react";
-var inpData = 0
-export default function Home() {
-    useEffect(() => {
-      fetch("http://localhost:8080")
-      .then((response) => response.json())
-      .then((data) => {
-          inpData = data.message
-      })
-  })
+export default async function SignInPage() {
+  const session = await getServerSession(authConfig);
+
+  if (session) return redirect("/home");
 
   return (
-    inpData
+    <div className="w-full flex flex-col items-center justify-center min-h-screen py-2">
+        <GoogleSignInButton />
+    </div>
   );
 }
