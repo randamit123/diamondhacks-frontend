@@ -1,13 +1,17 @@
 "use client"
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { SessionProvider, signOut, useSession } from "next-auth/react";
 import FlaskAppIframe from "../components/flaskOverlay";
 import Image from "next/image";
+import { getTextToSpeech } from "../../../utils/text_to_speech";
 
+var inpData = 0
 export function HomeWithSessionProvider() {
   const { data: session } = useSession();
   const [profilePicture, setProfilePicture] = useState('');
   const [userName, setUserName] = useState('');
+  const [inpData, setInpData] = useState<string[]>([]);
+  const audioPlayerRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     if (session?.user) {
@@ -15,6 +19,40 @@ export function HomeWithSessionProvider() {
       setUserName(session.user.name || '');
     }
   }, [session]);
+  
+  useEffect(() => {
+    const fetchPredictions = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/predictions");
+        if (!response.ok) {
+          throw new Error("Failed to fetch predictions");
+        }
+        const data = await response.json();
+        setInpData(data.predictions);
+        playTextToSpeech(data.predictions);
+      } catch (error) {
+        console.error("Error fetching predictions:", error);
+      }
+    };
+
+    fetchPredictions();
+    const interval = setInterval(fetchPredictions, 5000); // Fetch predictions every 5 seconds
+
+    return () => clearInterval(interval); // Cleanup interval on component unmount
+  }, []);
+
+
+  const playTextToSpeech = async (text: string) => {
+    try {
+      const audioUrl = await getTextToSpeech(text);
+      if (audioPlayerRef.current) {
+        audioPlayerRef.current.src = audioUrl;
+        audioPlayerRef.current.play();
+      }
+    } catch (error) {
+      console.error("Error generating text-to-speech:", error);
+    }
+  };
 
   return (
     <div className="join join-vertical justify-center items-center w-full h-screen bg-gradient-to-br from-[#f3f4f6] from-10% via-[#93c5fd] via-60% to-[#0891b2] to-2000%">
@@ -63,12 +101,17 @@ export function HomeWithSessionProvider() {
           <a className="text-2xl pb-6">Output:</a>
           <div className="card bg-base-200 w-11/12 h-5/6 opacity-100 p-10 ml-6">
             <a className="text-xl">
-              OUTPUT GOES HERE
+            {inpData.map((prediction, index) => (
+                <div key={index}>
+                  {prediction.length > 1 ? prediction.substring(1) : prediction}
+                </div>
+              ))}
             </a>
           </div>
         </div>
         <div className="card w-10 h-full opacity-100"></div>
       </div>
+      <audio ref={audioPlayerRef} controls style={{ display: "none" }} />
     </div>
   );
 }
