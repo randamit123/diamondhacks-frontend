@@ -70,9 +70,10 @@ def ws_disconnect():
 
 @app.route('/home')
 def index():
+    print("Streaming frames...")
     socketio.start_background_task(target=generate_frames)
     return "Streaming frames..."
 
 if __name__ == '__main__':
     #app.run(debug=True, port=8080)
-    socketio.run(app, debug=True, port=5001)
+    socketio.run(app, debug=True, port=8080)
