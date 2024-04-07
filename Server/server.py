@@ -5,8 +5,8 @@ from flask_cors import CORS
 from flask_socketio import SocketIO, emit
 
 app = Flask(__name__)
-CORS(app)
-socketio = SocketIO(app)
+CORS(app, origins="http://localhost:3000")
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 
 @app.route('/')
@@ -70,10 +70,9 @@ def ws_disconnect():
 
 @app.route('/home')
 def index():
-    #return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
     socketio.start_background_task(target=generate_frames)
     return "Streaming frames..."
 
 if __name__ == '__main__':
     #app.run(debug=True, port=8080)
-    socketio.run(app, debug=True, port=8080)
+    socketio.run(app, debug=True, port=5001)
