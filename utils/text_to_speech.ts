@@ -1,6 +1,6 @@
 export async function getTextToSpeech(text: string) {
-  var apiKey = process.env.NEXT_PUBLIC_ELEVEN_API; // genereate new API key
-  var voiceId = ""; // select voice ID
+  var apiKey = process.env.NEXT_PUBLIC_ELEVEN_API; 
+  var voiceId = "yl2ZDV1MzN4HbQJbMihG"; 
   const response = await fetch(
     `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
     {
