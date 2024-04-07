@@ -12,9 +12,11 @@ interface WebSocketCallProps {
   useEffect(() => {
     // Listen for 'frame' events emitted by the Flask server
     socket.on("frame", ({ image }) => {
+        {console.log("test")}
       // Create a Blob from the received image bytes
       const blob = new Blob([image], { type: 'image/jpeg' });
       const imageUrl = URL.createObjectURL(blob);
+      
 
       // Update the images state to display the new image
       setImages(prevImages => [...prevImages, imageUrl]);
@@ -37,3 +39,5 @@ interface WebSocketCallProps {
     </div>
   );
 }
+
+export default WebSocketCall;
