@@ -5,7 +5,8 @@ from flask_cors import CORS
 from flask_socketio import SocketIO, emit
 
 app = Flask(__name__)
-CORS(app, origins="http://localhost:3000")
+#CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 
@@ -37,7 +38,7 @@ def hello_world():
 
     cap.release() """
 
-def generate_frames():
+""" def generate_frames():
     print("test")
     cap = cv2.VideoCapture(0)
     with mp.solutions.holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
@@ -73,7 +74,24 @@ def index():
     print("Streaming frames...")
     socketio.start_background_task(target=generate_frames)
     return "Streaming frames..."
+ """
+
+def generate_frames():
+    cap = cv2.VideoCapture(0)
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            break
+        _, buffer = cv2.imencode('.jpg', frame)
+        frame_bytes = buffer.tobytes()
+        yield (b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+
+@app.route('/video_feed')
+def video_feed():
+    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == '__main__':
+    app.run(debug=True, port=8080)
+""" if __name__ == '__main__':
     #app.run(debug=True, port=8080)
-    socketio.run(app, debug=True, port=8080)
+    socketio.run(app, debug=True, port=8080) """
