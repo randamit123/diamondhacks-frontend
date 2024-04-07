@@ -18,13 +18,16 @@ export default async function SignInPage() {
         <div className="card w-3/5 h-full bg-base-100 shadow-xl opacity-90 items-center justify-center">
           <div className="h-5/6 w-5/6 carousel carousel-vertical rounded-box">
           <div className="carousel-item h-full w-full">
-            <img src="https://daisyui.com/images/stock/photo-1559703248-dcaaec9fab78.jpg" width="120%"/>
+            <img src="/PIC1.png" width="120%"/>
           </div> 
           <div className="carousel-item h-full w-full">
-            <img src="https://daisyui.com/images/stock/photo-1565098772267-60af42b81ef2.jpg" width="120%"/>
+            <img src="/PIC2.png" width="120%"/>
           </div> 
           <div className="carousel-item h-full w-full">
-            <img src="https://daisyui.com/images/stock/photo-1572635148818-ef6fd45eb394.jpg" width="120%"/>
+            <img src="/PIC3.png" width="120%"/>
+          </div>
+          <div className="carousel-item h-full w-full">
+            <img src="/PIC4.png" width="120%"/>
           </div>
           </div>
         </div>
