@@ -1,27 +1,48 @@
-"use client";
 
-import { useEffect } from "react";
+"use client"
+import React, { useEffect, useRef } from "react";
 import { signOut } from "next-auth/react";
+import { io } from "socket.io-client";
 
-
-var inpData = 0
 export default function Home() {
-    useEffect(() => {
-      fetch("http://localhost:8080")
-      .then((response) => response.json())
-      .then((data) => {
-          inpData = data.message
-          console.log(inpData)
-      })
-  })
+  const videoRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    const socket = io("http://localhost:5001"); // Connect to your Flask server WebSocket endpoint
+
+    socket.on("connect", () => {
+      console.log("WebSocket connected");
+    });
+
+    socket.on("frame", (data: ArrayBuffer) => {
+      // Convert ArrayBuffer to Blob
+      const blob = new Blob([data], { type: "image/jpeg" });
+      const imageUrl = URL.createObjectURL(blob);
+
+      // Update the src attribute of the videoRef element with the new image
+      if (videoRef.current) {
+        videoRef.current.src = imageUrl;
+      }
+    });
+
+    socket.on("disconnect", () => {
+      console.log("WebSocket disconnected");
+    });
+
+    return () => {
+      socket.disconnect(); // Cleanup WebSocket connection on component unmount
+    };
+  }, []);
 
   return (
     <>
-        inpData
-
-        <button className="bg-white rounded-full border border-gray-200 text-gray-800 px-4 py-2 flex items-center space-x-2 hover:bg-gray-200">
-            <span onClick={() => signOut({redirect: true, callbackUrl: "/"})}>Logout</span>
-        </button>
+      {videoRef.current && <img ref={videoRef} alt="Webcam Feed" style={{ width: "100%" }} />}
+      <button
+        className="bg-white rounded-full border border-gray-200 text-gray-800 px-4 py-2 flex items-center space-x-2 hover:bg-gray-200"
+        onClick={() => signOut({ redirect: true, callbackUrl: "/" })}
+      >
+        Logout
+      </button>
     </>
   );
 }
