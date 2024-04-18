@@ -1,3 +1,11 @@
+# Project: Resign
+**Sign language to text web app.** 
+
+## Contributions
+*Since we swapped around computers while working on the project, the commits don't accurately reflect the commits. This section is tended to outline our contributions.*
+
+**Amit Rand:** I spearheaded the project from inception to execution. I conceptualized the idea, planned the technological stack, and designed the architecture and infrastructure. Taking charge of development, I crafted a robust data collection system leveraging OpenCV to gather videos for model training. Additionally, I engineered an LSTM-based sign language-to-text model entirely from the ground up, employing cutting-edge tools such as TensorFlow, Keras, OpenCV, and MediaPipe. I  integrated the model into both backend systems and local APIs, facilitating smooth communication of results between the front end and back end. I also assisted in debugging any issues encountered with our technologies ranging from our Next.js framework to TypeScript syntax and GitHub source management. Furthermore, I enhanced the project's capabilities by integrating text-to-speech functionalities using Elevenlabs.
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
